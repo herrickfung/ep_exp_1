@@ -8,11 +8,25 @@ import pandas as pd
 from datetime import datetime
 from psychopy import visual, event, monitors, core, logging, gui
 
-# variables to calibrate the monitor
-monitor_name = 'testMonitor'
+'''
+variables to calibrate the monitor
+line_width_in_pixel is only used in the line width of the
+precue and postcue, psychopy not supported in deg units
+The border width of the circle is 0.2 visual angle
+'''
+# Setting for RLG307 Monitor
+monitor_name = 'RLG307'
 view_distance = 60
-screen_width = 47.5
-screen_resolution = [1680,1050]
+screen_width = 59.8
+screen_resolution = [3840,2160]
+line_width_in_pixel = 13
+
+# Setting for Home Monitor
+# monitor_name = 'testMonitor'
+# view_distance = 60
+# screen_width = 47.5
+# screen_resolution = [1680,1050]
+# line_width_in_pixel = 7
 
 # declare variables for trial generation
 No_of_Trials = 9
@@ -128,16 +142,16 @@ mon = monitors.Monitor(monitor_name)
 mon.setWidth(screen_width)
 mon.setDistance(view_distance)
 
-win = visual.Window(size=screen_resolution, color = '#C0C0C0',
-                    fullscr = True, monitor=mon, allowGUI = True
+win = visual.Window(size=screen_resolution, color='#C0C0C0',
+                    fullscr=True, monitor=mon, allowGUI = True
                     )
 
 
 def instruction():
     #  creating the instruction text to shown at the beginning
     instruct = visual.TextStim(win = win, text = ' ', font = 'Times New Roman',
-                               pos = (0,0), color = 'black', units = 'pix',
-                               height = 30, wrapWidth=800
+                               pos = (0,0), color = 'black', units = 'deg',
+                               height = 0.9, wrapWidth=26
                                )
 
     instruct.setText(instruct_text)
@@ -146,7 +160,7 @@ def instruction():
     instructresp = event.waitKeys(maxWait=1000, keyList=['end','f', 'j'],
                                   clearEvents=True
                                   )
- 
+
     if 'f' in instructresp or 'j' in instructresp:
         pass
     elif 'end' in instructresp:
@@ -157,12 +171,12 @@ def instruction():
 def break_time(trial_no):
     # Create stimuli and actions in break trials
     break_text = visual.TextStim(win = win, text = ' ', font = 'Times New Roman',
-                                 pos = (0,-200), color = 'black', units = 'pix',
-                                 height = 30, wrapWidth=800
+                                 pos = (0,-8), color = 'black', units = 'deg',
+                                 height = 0.9, wrapWidth=20
                                  )
     break_timer = visual.TextStim(win = win, text = ' ', font = 'Source Code Pro',
-                                  pos = (0,0), color = 'black', units = 'pix',
-                                  height = 100, wrapWidth=800
+                                  pos = (0,0), color = 'black', units = 'deg',
+                                  height = 4, wrapWidth=20
                                   )
 
     if trial_no == breaktrial[1]:  # Must break
@@ -253,11 +267,11 @@ def precue(condition, position):
 
     singleprecue = visual.Circle(win=win, units = 'deg', radius=0.9,
                                  edges=1000, fillColor='#C0C0C0', lineColor='black',
-                                 lineWidth=7, opacity=1
+                                 lineWidth=line_width_in_pixel, opacity=1
                                  )
     setprecue = visual.Circle(win=win, units = 'deg', pos=(0,0), radius=2.85,
                               edges=1000, fillColor='#C0C0C0', lineColor='black',
-                              lineWidth=7, opacity=1
+                              lineWidth=line_width_in_pixel, opacity=1
                               )
 
     if (condition[0] == 1 or condition[0] == 2):
@@ -281,11 +295,11 @@ def postcue(condition, position):
     """
     singlepostcue = visual.Circle(win=win, units = 'deg', radius=0.9,
                                   edges=1000, fillColor='#C0C0C0', lineColor='black',
-                                  lineWidth=7, opacity=1
+                                  lineWidth=line_width_in_pixel, opacity=1
                                   )
     setpostcue = visual.Circle(win=win, units = 'deg', pos=(0,0), radius=2.85,
                                edges=1000, fillColor='#C0C0C0', lineColor='black',
-                               lineWidth=7, opacity=1
+                               lineWidth=line_width_in_pixel, opacity=1
                                )
 
     if (condition[0] == 1 or condition[0] == 4):
@@ -2512,8 +2526,8 @@ def gaborset(orientation, position, configuration, variation):
 def debriefing():
     #  Debriefing Note
     debrief = visual.TextStim(win = win, text = ' ', font = 'Times New Roman',
-                              pos = (0,0), color = 'black', units = 'pix',
-                              height = 30, wrapWidth=800
+                              pos = (0,0), color = 'black', units = 'deg',
+                              height = 0.9, wrapWidth=20
                               )
 
     debrief.setText(debrief_text)
@@ -2567,10 +2581,12 @@ def main():
 
         if 'end' in resp:
             # Exit Key
-            resp_time = core.getTime(applyZero = True) - start_time
-            response_array.append(resp[0])
-            latency_array.append(resp_time)
-            break
+            # resp_time = core.getTime(applyZero = True) - start_time
+            # response_array.append(resp[0])
+            # latency_array.append(resp_time)
+            # break
+            win.close()
+            sys.exit()
 
         elif 'f' in resp:
             # Anticlockwise response)
@@ -2589,6 +2605,7 @@ def main():
             if i in breaktrial:
                 break_time(i)
                 continue
+
     '''
     The main trial loop Ends Here.
     '''
@@ -2611,7 +2628,7 @@ def main():
 
     outputfile.to_csv(save_path, sep=',', index=False)
 
-    # debriefing()
+    debriefing()
     win.close()
     sys.exit()
 
