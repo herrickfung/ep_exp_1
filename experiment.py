@@ -1,4 +1,7 @@
-''' The Sperling's single-Ensemble Task '''
+'''
+Last updated on 18/5/2020
+The Sperling's single-Ensemble Task
+'''
 
 # import libraries
 import os
@@ -15,27 +18,30 @@ precue and postcue, psychopy not supported in deg units
 The border width of the circle is 0.2 visual angle
 '''
 # Setting for RLG307 Monitor
-monitor_name = 'RLG307'
-view_distance = 60
-screen_width = 59.8
-screen_resolution = [3840,2160]
-line_width_in_pixel = 13
+# monitor_name = 'RLG307'
+# view_distance = 60
+# screen_width = 59.8
+# screen_resolution = [3840,2160]
+# line_width_in_pixel = 13
 
 # Setting for Home Monitor
-# monitor_name = 'testMonitor'
-# view_distance = 60
-# screen_width = 47.5
-# screen_resolution = [1680,1050]
-# line_width_in_pixel = 7
+monitor_name = 'testMonitor'
+view_distance = 60
+screen_width = 47.5
+screen_resolution = [1680,1050]
+line_width_in_pixel = 7
 
 # declare variables for trial generation
-No_of_Trials = 9
+No_of_Trials = 12
 conditions = [1,2,3,4]
 orientations = [0,5,-5,10,-10,20,-20]
 positions = [1,2,3,4,5,6,7,8,9]
 configurations = [0,1]  # 0 is coherent, 1 is in coherent
 variations = [0,1]  # 0 is first variation, 1 is second variation
-breaktrial = [139,279,419]  # for break in 560 trials
+breaktrial = [  # for break trials
+    ((No_of_Trials / 4) - 1),
+    ((No_of_Trials / 2) - 1),
+    ((3 * No_of_Trials / 4) - 1)]
 
 # declare timing variables
 fixation_time = 0.25
