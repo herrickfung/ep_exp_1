@@ -18,7 +18,7 @@ precue and postcue, psychopy not supported in deg units
 The border width of the circle is 0.2 visual angle
 '''
 
-# Setting for RLG307 Monitor
+# Setting for both RLG307 Monitors
 # monitor_name = 'RLG307'
 # view_distance = 60
 # screen_width = 59.8
@@ -2585,6 +2585,7 @@ def main():
 
         resp = event.waitKeys(maxWait=1000, keyList=['end','f','j'],
                               clearEvents=True)
+        print(resp)
 
         if 'end' in resp:
             # Exit Key
@@ -2642,3 +2643,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
