@@ -1,6 +1,19 @@
 '''
-Last updated on 18/5/2020
+Last updated on 25/5/2020
 The Sperling's single-Ensemble Task
+
+Some Amendments (25/5/2020):
+Add 500ms ISI blank screen "done"
+Amend to option 2
+Take +/- together for the psychometric curve
+
+(
+4 Experimental Conditions x
+3 Center Orientation Tilts (0, +-10, +-20) x
+3 Set Orientation Tilts (0, +-10, +-20) x
+2 Configuration (+/-) x
+5 Repetitions (Positional Changes???)
+) = 360 trials
 '''
 
 # import libraries
@@ -19,21 +32,21 @@ The border width of the circle is 0.2 visual angle
 '''
 
 # Setting for both RLG307 Monitors
-# monitor_name = 'RLG307'
-# view_distance = 60
-# screen_width = 59.8
-# screen_resolution = [3840,2160]
-# line_width_in_pixel = 13
+monitor_name = 'RLG307'
+view_distance = 60
+screen_width = 59.8
+screen_resolution = [3840,2160]
+line_width_in_pixel = 13
 
 # Setting for Home Monitor
-monitor_name = 'testMonitor'
-view_distance = 60
-screen_width = 47.5
-screen_resolution = [1680,1050]
-line_width_in_pixel = 7
+# monitor_name = 'testMonitor'
+# view_distance = 60
+# screen_width = 47.5
+# screen_resolution = [1680,1050]
+# line_width_in_pixel = 7
 
 # declare variables for trial generation
-No_of_Trials = 120
+No_of_Trials = 28
 conditions = [1,2,3,4]
 orientations = [0,5,-5,10,-10,20,-20]
 positions = [1,2,3,4,5,6,7,8,9]
@@ -49,8 +62,9 @@ fixation_time = 0.25
 precue_time = 0.75
 gaborset_time = 0.2
 blankscreen_time = 0.4
-short_break_time = 60
-long_break_time = 120
+isi_time = 0.5
+short_break_time = 5
+long_break_time = 5
 
 # generating the trial list and randomly shuffle it
 triallist = []
@@ -2601,6 +2615,8 @@ def main():
             resp_time = core.getTime(applyZero = True) - start_time
             response_array.append(resp[0])
             latency_array.append(resp_time)
+            win.flip()
+            core.wait(isi_time)
             if i in breaktrial:
                 break_time(i)
                 continue
@@ -2610,6 +2626,8 @@ def main():
             resp_time = core.getTime(applyZero = True) - start_time
             response_array.append(resp[0])
             latency_array.append(resp_time)
+            win.flip()
+            core.wait(isi_time)
             if i in breaktrial:
                 break_time(i)
                 continue
@@ -2643,4 +2661,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
