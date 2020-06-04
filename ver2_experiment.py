@@ -1,5 +1,5 @@
 '''
-Updated on 4/6/2020
+Last Updated on 4/6/2020
 The Sperling's single-ensemble task (Second Version)
 #
 Trial Procedure & Time:
@@ -168,10 +168,18 @@ info.addField('Gender:', choices = ['Male', 'Female'])
 info.addField('Dominant Hand: ', choices=['Right', 'Left'])
 show_info = info.show()
 
-# check info. and create save file name
+# Create a data director, check info. and create save file name
+try:
+    os.mkdir('data')
+    print("Directory Created!")
+except FileExistsError:
+    print("Directory Exist!")
+
 if info.OK:
-    save_file_name = show_info[0] + show_info[1] + '_' + \
+    save_file_name = 'data/' + show_info[0] + show_info[1] + '_' + \
         show_info[2] + '_ep_experiment.csv'
+    save_file_name_backup = 'data/' + show_info[0] + show_info[1] + '_' + \
+        show_info[2] + '_backup_orientation.csv'
 else:
     print("User Cancelled")
 
@@ -179,6 +187,9 @@ else:
 save_path = gui.fileSaveDlg(initFileName=save_file_name,
                             prompt='Select Save File'
                             )
+# Create a Backup file for all orientation in the set
+# Refer to the gaborset function
+backup_file = open(save_file_name_backup, 'w')
 
 # calibrating monitor and creating window for experiment
 mon = monitors.Monitor(monitor_name)
@@ -301,7 +312,7 @@ def gaborset(set_orientation, cued_orientation, position):
     else:  # neutral set (0)
         pass
 
-    if cued_orientation == 0: # To prevent 3 0s when the cued is 0
+    if cued_orientation == 0:  # To prevent 3 0s when the cued is 0
         ori_array = [0,
                      cued_orientation + 25,
                      -cued_orientation - 25,
@@ -324,7 +335,11 @@ def gaborset(set_orientation, cued_orientation, position):
                      neg_ori_array[1],
                      neg_ori_array[2],
                      ]
+
     np.random.shuffle(ori_array)
+    ori_array_list_to_string = ','.join([str(element) for element in ori_array])
+    backup_file.write(ori_array_list_to_string)
+    backup_file.write("\n")
 
     '''
     Draw the Cued_Orientation and Set position to memory,
@@ -545,6 +560,7 @@ def main():
     # Debrifing & close all
     debriefing()
     win.close()
+    backup_file.close()
     sys.exit()
 
 
