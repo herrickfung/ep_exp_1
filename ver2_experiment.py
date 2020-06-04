@@ -114,8 +114,8 @@ For a big circle, report the average of all patches within. \n\n\
 Press 'f' to indicate an anti-clockwise tilt & \n\
 Press 'j' to indicate a clockwise tilt. \n\n\
 You are required to complete a total of 400 trials, optional or mandatory \
-breaks will be given for every 100 trials (~ 5 minutes). The whole experimental \
-procedure is expected to complete within 30 minutes.\n\n\
+breaks will be given for every 100 trials (~ 5 minutes).\
+The whole experimental procedure is expected to complete within 30 minutes.\n\n\
 Important Remarks: \n\
 Response ASAP, Stick to you Intuition, & Prevent Overthinking. \n\
 Raise your questions now, if there is any. \n\n\
