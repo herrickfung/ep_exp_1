@@ -1,14 +1,14 @@
 '''
-Built on 1/6/2020
+Updated on 4/6/2020
 The Sperling's single-ensemble task (Second Version)
-
+#
 Trial Procedure & Time:
 fixation screen: 250ms
 pre_cue screen: 750ms
 gabor_set screen: 200ms
 blank screen: 400ms
 isi blank screen: 500ms
-
+#
 Trial Constructions:
 4 Experimental Conditions x
 5 Set Ori Tilts (0, +-10, +-20) x
@@ -18,7 +18,7 @@ Trial Constructions:
 4 Repetition for Postional Changes
 }
 == 400 trials
-
+#
 Break Trials:
 1 min Self-Terminated Break (in trial 100 & trial 300)
 2 min Mandatory Break (in trial 200)
@@ -63,11 +63,15 @@ short_break_time = 5
 long_break_time = 5
 
 # declare variables for trial generations
-No_of_Trials = 40
+No_of_Trials = 12
 conditions = [1,2,3,4]
 set_orientations = [0,10,-10,20,-20]
 cued_orientations = [0,10,-10,20,-20]
 positions = [1,2,3,4,5,6,7,8,9]
+breaktrial = [  # for break trials
+    ((No_of_Trials / 4) - 1),
+    ((No_of_Trials / 2) - 1),
+    ((3 * No_of_Trials / 4) - 1)]
 
 # generate the trial list and randomly shuffle
 triallist = []
@@ -96,6 +100,29 @@ response_array = []
 latency_array = []
 
 # Text Variables - All Instruction text
+instruct_text = \
+    "\
+Press 'f' or 'j' to Start the Experiment.\n\n\
+Press 'End' to Quit now or Terminate the Experiment anytime.\
+"
+debrief_text = \
+    "\
+That's the End of the Experiment.\n\
+Thank you for your Participation.\
+"
+may_break_text = \
+    "\
+Press 'space' to skip break\
+"
+must_break_text = \
+    "\
+In must break text\
+"
+end_break_text = \
+    "\
+In end break text, \n\
+Press 'f' or 'j' to continue.\
+"
 
 # clear command output and start logging
 os.system('cls' if os.name == 'ht' else 'clear')
@@ -138,14 +165,28 @@ save_path = gui.fileSaveDlg(initFileName=save_file_name,
 mon = monitors.Monitor(monitor_name)
 mon.setWidth(screen_width)
 mon.setDistance(view_distance)
-
 win = visual.Window(size=screen_resolution, color='#C0C0C0',
                     fullscr=True, monitor=mon, allowGUI = True
                     )
 
 
 def instruction():
-    pass
+    #  creating the instruction text to shown at the beginning
+    instruct = visual.TextStim(win = win, text = ' ', font = 'Times New Roman',
+                               pos = (0,0), color = 'black', units = 'deg',
+                               height = 0.9, wrapWidth=26
+                               )
+    instruct.setText(instruct_text)
+    instruct.draw()
+    win.flip()
+    instructresp = event.waitKeys(maxWait=1000, keyList=['end','f', 'j'],
+                                  clearEvents=True
+                                  )
+    if 'f' in instructresp or 'j' in instructresp:
+        pass
+    elif 'end' in instructresp:
+        win.close()
+        sys.exit()
 
 
 def fixation():
@@ -156,7 +197,6 @@ def fixation():
     fix_vert = visual.Rect(win = win, width=0.1, height=0.9, units='deg',
                            lineColor='black', fillColor='black', pos=(0,0)
                            )
-
     fix_hori.draw()
     fix_vert.draw()
 
@@ -191,7 +231,6 @@ def precue(condition, position):
     Condition 1 & 2 --> Return single pre-cue
     Condition 3 & 4 --> Return ensemble pre-cue
     """
-
     singleprecue = visual.Circle(win=win, units = 'deg', radius=0.9,
                                  edges=1000, fillColor='#C0C0C0',
                                  lineColor='black',
@@ -206,7 +245,6 @@ def precue(condition, position):
     if (condition == 1 or condition == 2):
         singleprecue.pos = pos_to_coordinate(position)
         singleprecue.draw()
-
     elif (condition == 3 or condition == 4):
         setprecue.draw()
 
@@ -227,22 +265,45 @@ def gaborset(set_orientation, cued_orientation, position):
     Construction of the GaborSet Arrays
     And Randomly Shuffle it
     '''
+
     pos_array = [1,2,3,4,5,6,7,8,9]
     np.random.shuffle(pos_array)
     ori_array = []
-    if set_orientation == 0:
+    pos_ori_array = np.array([25,30,35])
+    neg_ori_array = -pos_ori_array
+
+    if set_orientation > 0:  # postive ensemble set
+        pos_ori_array = pos_ori_array + 2 * set_orientation
+        neg_ori_array = neg_ori_array + set_orientation
+    elif set_orientation < 0:  # negative ensemble set
+        pos_ori_array = pos_ori_array + set_orientation
+        neg_ori_array = neg_ori_array + 2 * set_orientation
+    else:  # neutral set (0)
+        pass
+
+    if cued_orientation == 0:
+        ori_array = [0,
+                     cued_orientation + 25,
+                     -cued_orientation - 25,
+                     pos_ori_array[0],
+                     pos_ori_array[1],
+                     pos_ori_array[2],
+                     neg_ori_array[0],
+                     neg_ori_array[1],
+                     neg_ori_array[2],
+                     ]
+
+    else:
         ori_array = [0,
                      cued_orientation,
-                     (-cued_orientation),
-                     set_orientation + 20,
-                     set_orientation - 20,
-                     set_orientation + 30,
-                     set_orientation - 30,
-                     set_orientation + 40,
-                     set_orientation - 40,
+                     -cued_orientation,
+                     pos_ori_array[0],
+                     pos_ori_array[1],
+                     pos_ori_array[2],
+                     neg_ori_array[0],
+                     neg_ori_array[1],
+                     neg_ori_array[2],
                      ]
-    else:
-        ori_array = [cued_orientation,0,0,0,0,0,0,0,0]
     np.random.shuffle(ori_array)
 
     '''
@@ -278,6 +339,7 @@ def postcue(condition, position):
     Condition 1 & 4--> Return single post-cue
     Condition 2 & 3 --> Return ensemble post-cue
     """
+
     singlepostcue = visual.Circle(win=win, units = 'deg', radius=0.9,
                                   edges=1000, fillColor='#C0C0C0',
                                   lineColor='black',
@@ -294,17 +356,80 @@ def postcue(condition, position):
     if (condition == 1 or condition == 4):
         singlepostcue.pos = pos_to_coordinate(position)
         singlepostcue.draw()
-
     elif (condition == 2 or condition == 3):
         setpostcue.draw()
 
 
-def break_time():
-    pass
+def break_time(trial_no):
+    # Create stimuli and actions in break trials
+    break_text = visual.TextStim(win = win, text = ' ',
+                                 font = 'Times New Roman',
+                                 pos = (0,-8), color = 'black',
+                                 units = 'deg', height = 0.9,
+                                 wrapWidth=20
+                                 )
+    break_timer = visual.TextStim(win = win, text = ' ',
+                                  font = 'Source Code Pro',
+                                  pos = (0,0), color = 'black',
+                                  units = 'deg', height = 4,
+                                  wrapWidth=20
+                                  )
+
+    if trial_no == breaktrial[1]:  # Must break
+        break_text.setText(must_break_text)
+        break_text.draw()
+        win.flip()
+        timer = core.CountdownTimer(long_break_time)
+        while timer.getTime() > 0:
+            break_timer.setText(round(timer.getTime(), 1))
+            break_text.draw()
+            break_timer.draw()
+            win.flip()
+            if event.getKeys(['end']):
+                win.close()
+                sys.exit()
+
+    else:  # Self-Terminated Break
+        break_text.setText(may_break_text)
+        break_text.draw()
+        win.flip()
+        timer = core.CountdownTimer(short_break_time)
+        while timer.getTime() > 0:
+            break_timer.setText(round(timer.getTime(), 1))
+            break_text.draw()
+            break_timer.draw()
+            win.flip()
+            if event.getKeys(['space']):
+                break
+            elif event.getKeys(['end']):
+                win.close()
+                sys.exit()
+
+    break_text.setText(end_break_text)
+    break_timer.setText(round(timer.getTime(), 1))
+    break_text.draw()
+    break_timer.draw()
+    win.flip()
+    breakresp = event.waitKeys(maxWait=1000, keyList=['end','f', 'j'],
+                               clearEvents=True
+                               )
+    if 'f' in breakresp or 'j' in breakresp:
+        pass
+    elif 'end' in breakresp:
+        win.close()
+        sys.exit()
 
 
 def debriefing():
-    pass
+    #  Debriefing Note
+    debrief = visual.TextStim(win = win, text = ' ', font = 'Times New Roman',
+                              pos = (0,0), color = 'black', units = 'deg',
+                              height = 0.9, wrapWidth=20
+                              )
+    debrief.setText(debrief_text)
+    debrief.draw()
+    win.flip()
+    core.wait(5)
 
 
 def main():
@@ -326,40 +451,35 @@ def main():
         cued_orientation_array.append(triallist[i][2])
         position_array.append(triallist[i][3])
 
-        print(triallist[i])
-
+        # fixation screen
         fixation()
         win.flip()
         core.wait(fixation_time)
-
+        # precue screen
         precue(triallist[i][0], triallist[i][3])
         win.flip()
         core.wait(precue_time)
-
+        # set screen
         gaborset(triallist[i][1], triallist[i][2], triallist[i][3])
         win.flip()
         core.wait(gaborset_time)
-
+        # blankscreen
         win.flip()
         core.wait(blankscreen_time)
-
+        # postcue screen
         postcue(triallist[i][0], triallist[i][3])
         win.flip()
 
         start_time = core.getTime(applyZero = True)
-
         resp = event.waitKeys(maxWait=1000, keyList=['end','f','j'],
                               clearEvents=True)
-        print(resp)
 
         if 'end' in resp:
             # Exit Key
-            # resp_time = core.getTime(applyZero = True) - start_time
-            # response_array.append(resp[0])
-            # latency_array.append(resp_time)
-            # break
-            win.close()
-            sys.exit()
+            resp_time = core.getTime(applyZero = True) - start_time
+            response_array.append(resp[0])
+            latency_array.append(resp_time)
+            break
 
         elif 'f' in resp:
             # Anticlockwise response)
@@ -368,9 +488,9 @@ def main():
             latency_array.append(resp_time)
             win.flip()
             core.wait(isi_time)
-            # if i in breaktrial:
-            #     break_time(i)
-            #     continue
+            if i in breaktrial:
+                break_time(i)
+                continue
 
         elif 'j' in resp:
             # Clockwise response
@@ -379,16 +499,30 @@ def main():
             latency_array.append(resp_time)
             win.flip()
             core.wait(isi_time)
-            # if i in breaktrial:
-            #     break_time(i)
-            #     continue
-
+            if i in breaktrial:
+                break_time(i)
+                continue
     '''
     The main trial loop Ends Here.
     '''
 
     # Create the DataFrame & Save it to csv
-
+    outputfile = pd.DataFrame({'Exp_Date': date_array,
+                               'Exp_Time': time_array,
+                               'Sub_Name': name_array,
+                               'Age': age_array,
+                               'Gender': gender_array,
+                               'Dominant_Hand': hand_array,
+                               'Trial_No': trial_no_array,
+                               'Condition': condition_array,
+                               'Cued_Orientation': cued_orientation_array,
+                               'Set_Orientation': set_orientation_array,
+                               'Position': position_array,
+                               'Response': response_array,
+                               'Latency': latency_array
+                               })
+    outputfile.to_csv(save_path, sep=',', index=False)
+    # Debrifing & close all
     debriefing()
     win.close()
     sys.exit()
