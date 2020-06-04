@@ -59,7 +59,7 @@ precue_time = 0.75
 gaborset_time = 0.2
 blankscreen_time = 0.4
 isi_time = 0.5
-short_break_time = 5
+short_break_time = 30
 long_break_time = 5
 
 # declare variables for trial generations
@@ -102,9 +102,27 @@ latency_array = []
 # Text Variables - All Instruction text
 instruct_text = \
     "\
-Press 'f' or 'j' to Start the Experiment.\n\n\
-Press 'End' to Quit now or Terminate the Experiment anytime.\
+Instructions: \n\
+This experiment is about judging the orientation. On each trial, \
+A fixation cross will appear, followed by a cueing circle, \
+you are required to focus on anything appeared WITHIN this circle. \
+After presenting a flash of orientation patches, you will see another \
+circle, you will need to judge and report the orientation WITHIN \
+this SECOND circle. \n\n\
+For a small circle, report the orientation of the single patch; \n\
+For a big circle, report the average of all patches within. \n\n\
+Press 'f' to indicate an anti-clockwise tilt & \n\
+Press 'j' to indicate a clockwise tilt. \n\n\
+You are required to complete a total of 400 trials, optional or mandatory \
+breaks will be given for every 100 trials (~ 5 minutes). The whole experimental \
+procedure is expected to complete within 30 minutes.\n\n\
+Important Remarks: \n\
+Response ASAP, Stick to you Intuition, & Prevent Overthinking. \n\
+Raise your questions now, if there is any. \n\n\
+Press 'f' or 'j' to Start the Experiment. \n\
+Press 'End' if you want to Terminate the Experiment anytime.\
 "
+
 debrief_text = \
     "\
 That's the End of the Experiment.\n\
@@ -112,16 +130,17 @@ Thank you for your Participation.\
 "
 may_break_text = \
     "\
-Press 'space' to skip break\
+You have completed 100 trials, you may take a 1-minute break, \n\n\
+If you don't need to, \n\
+Press 'Spacebar' to Skip. \n\
 "
 must_break_text = \
     "\
-In must break text\
+You have completed 200 trials, Take a 2-minute break.\
 "
 end_break_text = \
     "\
-In end break text, \n\
-Press 'f' or 'j' to continue.\
+Break Ended, \nPress 'f' or 'j' to Continue the experiment.\
 "
 
 # clear command output and start logging
@@ -268,6 +287,7 @@ def gaborset(set_orientation, cued_orientation, position):
 
     pos_array = [1,2,3,4,5,6,7,8,9]
     np.random.shuffle(pos_array)
+
     ori_array = []
     pos_ori_array = np.array([25,30,35])
     neg_ori_array = -pos_ori_array
@@ -281,7 +301,7 @@ def gaborset(set_orientation, cued_orientation, position):
     else:  # neutral set (0)
         pass
 
-    if cued_orientation == 0:
+    if cued_orientation == 0: # To prevent 3 0s when the cued is 0
         ori_array = [0,
                      cued_orientation + 25,
                      -cued_orientation - 25,
@@ -445,7 +465,7 @@ def main():
         age_array.append(show_info[3])
         gender_array.append(show_info[4])
         hand_array.append(show_info[5])
-        trial_no_array.append(i)
+        trial_no_array.append(i + 1)
         condition_array.append(triallist[i][0])
         set_orientation_array.append(triallist[i][1])
         cued_orientation_array.append(triallist[i][2])
