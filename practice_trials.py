@@ -1,6 +1,7 @@
 '''
 Last Updated on 5/6/2020
 The Sperling's single-ensemble task (Second Version)
+*** For Practice Trials with Feedbacks (Based on ver2_experiment.py)
 #
 Trial Procedure & Time:
 fixation screen: 250ms
@@ -58,20 +59,15 @@ fixation_time = 0.25
 precue_time = 0.75
 gaborset_time = 0.2
 blankscreen_time = 0.4
+feedback_screen_time = 1
 isi_time = 0.5
-short_break_time = 5
-long_break_time = 5
 
 # declare variables for trial generations
-No_of_Trials = 400
+No_of_Trials = 10
 conditions = [1,2,3,4]
 set_orientations = [0,10,-10,20,-20]
 cued_orientations = [0,10,-10,20,-20]
 positions = [1,2,3,4,5,6,7,8,9]
-breaktrial = [  # for break trials
-    ((No_of_Trials / 4) - 1),
-    ((No_of_Trials / 2) - 1),
-    ((3 * No_of_Trials / 4) - 1)]
 
 # generate the trial list and randomly shuffle
 triallist = []
@@ -84,68 +80,14 @@ for condition in conditions:
                 triallist.append(trial)
                 np.random.shuffle(triallist)
 
-# generate blank arrays for the output data file
-date_array = []
-time_array = []
-name_array = []
-age_array = []
-gender_array = []
-hand_array = []
-trial_no_array = []
-condition_array = []
-set_orientation_array = []
-cued_orientation_array = []
-position_array = []
-response_array = []
-latency_array = []
-
 # clear command output and start logging
 os.system('cls' if os.name == 'ht' else 'clear')
 logging.console.setLevel(logging.CRITICAL)
 print("**************************************")
-print("MODIFIED SPERLING'S SINGLE-ENSEMBLE TASK")
+print("PRACTICE TRIAL - NO SAVE")
 print("PSYCHOPY LOGGING set to : CRITICAL")
 print(datetime.now())
 print("**************************************")
-
-# get current date and time
-current_date = datetime.now().strftime("%Y%m%d")
-current_time = datetime.now().strftime("%H%M%S")
-
-# get observer's information
-info = gui.Dlg(title="Ensemble Perception Experiment", pos = [600,300],
-               labelButtonOK="READY", labelButtonCancel=" ")
-info.addText("Observer's Info. ")
-info.addField('Experiment Date (YMD): ', current_date)
-info.addField('Experiment Time (HMS): ', current_time)
-info.addField('Name: ')
-info.addField('Age: ')
-info.addField('Gender:', choices = ['Male', 'Female'])
-info.addField('Dominant Hand: ', choices=['Right', 'Left'])
-show_info = info.show()
-
-# Create a data director, check info. and create save file name
-try:
-    os.mkdir('data')
-    print("Directory Created!")
-except FileExistsError:
-    print("Directory Exist!")
-
-if info.OK:
-    save_file_name = 'data/' + show_info[0] + show_info[1] + '_' + \
-        show_info[2] + '_ep_experiment.csv'
-    save_file_name_backup = 'data/' + show_info[0] + show_info[1] + '_' + \
-        show_info[2] + '_backup_orientation.csv'
-else:
-    print("User Cancelled")
-
-# Create Save Path
-save_path = gui.fileSaveDlg(initFileName=save_file_name,
-                            prompt='Select Save File'
-                            )
-# Create a Backup file for all orientation in the set
-# Refer to the gaborset function
-backup_file = open(save_file_name_backup, 'w')
 
 # calibrating monitor and creating window for experiment
 mon = monitors.Monitor(monitor_name)
@@ -160,6 +102,7 @@ def instruction():
     #  creating the instruction text to shown at the beginning
     instruct_text = \
         "\
+PRACTICE TRIAL: NO SAVE\n\
 Instructions: \n\
 This experiment is about judging the orientation. On each trial, \
 A fixation cross will appear, followed by a cueing circle, \
@@ -316,9 +259,6 @@ def gaborset(set_orientation, cued_orientation, position):
                      ]
 
     np.random.shuffle(ori_array)
-    ori_array_list_to_string = ','.join([str(element) for element in ori_array])
-    backup_file.write(ori_array_list_to_string)
-    backup_file.write("\n")
 
     '''
     Draw the Cued_Orientation and Set position to memory,
@@ -374,87 +314,54 @@ def postcue(condition, position):
         setpostcue.draw()
 
 
-def break_time(trial_no):
-    # Create stimuli and actions in break trials
-    may_break_text = \
-        "\
-You have completed {} trials, you may take a 1-minute break, \n\n\
-If you don't need to, \n\
-Press 'Spacebar' to Skip. \n\
-".format(trial_no + 1)
-    must_break_text = \
-        "\
-You have completed {} trials, Take a 2-minute break.\
-".format(trial_no + 1)
-    end_break_text = \
-        "\
-Break Ended, \nPress 'f' or 'j' to Continue the experiment.\
-"
+def feedback(condition, set_orientation, cued_orientation, response):
+    # Create Feedback for Practice Trial and draw to memory
+    '''
+    Draw a green circle for correct, red for wrong
+    if 0 in ori: always correct
+    '''
+    correct_fb = visual.Circle(win=win, units = 'deg', pos=(0,0), radius=2.5,
+                               edges=1000, fillColor='#ADFF2F',
+                               lineColor='#ADFF2F',
+                               lineWidth=line_width_in_pixel,
+                               opacity=1)
+    wrong_fb = visual.Circle(win=win, units = 'deg', pos=(0,0), radius=2.5,
+                               edges=1000, fillColor='#FF0000',
+                               lineColor='#FF0000',
+                               lineWidth=line_width_in_pixel,
+                               opacity=1)
 
-    break_text = visual.TextStim(win = win, text = ' ',
-                                 font = 'Times New Roman',
-                                 pos = (0,-8), color = 'black',
-                                 units = 'deg', height = 0.9,
-                                 wrapWidth=20
-                                 )
-    break_timer = visual.TextStim(win = win, text = ' ',
-                                  font = 'Source Code Pro',
-                                  pos = (0,0), color = 'black',
-                                  units = 'deg', height = 4,
-                                  wrapWidth=20
-                                  )
+    if 'f' in response:
+        resp_bin = 0
+    else:
+        resp_bin = 1
 
-    if trial_no == breaktrial[1]:  # Must break
-        break_text.setText(must_break_text)
-        break_text.draw()
-        win.flip()
-        timer = core.CountdownTimer(long_break_time)
-        while timer.getTime() > 0:
-            break_timer.setText(round(timer.getTime(), 1))
-            break_text.draw()
-            break_timer.draw()
-            win.flip()
-            if event.getKeys(['end']):
-                win.close()
-                sys.exit()
+    if condition == 1 or condition == 4:
+        if cued_orientation > 0:
+            answer = 1
+        elif cued_orientation == 0:
+            answer = resp_bin
+        else:
+            answer = 0
+    else:
+        if set_orientation > 0:
+            answer = 1
+        elif set_orientation == 0:
+            answer = resp_bin
+        else:
+            answer = 0
 
-    else:  # Self-Terminated Break
-        break_text.setText(may_break_text)
-        break_text.draw()
-        win.flip()
-        timer = core.CountdownTimer(short_break_time)
-        while timer.getTime() > 0:
-            break_timer.setText(round(timer.getTime(), 1))
-            break_text.draw()
-            break_timer.draw()
-            win.flip()
-            if event.getKeys(['space']):
-                break
-            elif event.getKeys(['end']):
-                win.close()
-                sys.exit()
-
-    break_text.setText(end_break_text)
-    break_timer.setText(round(timer.getTime(), 1))
-    break_text.draw()
-    break_timer.draw()
-    win.flip()
-    breakresp = event.waitKeys(maxWait=1000, keyList=['end','f', 'j'],
-                               clearEvents=True
-                               )
-    if 'f' in breakresp or 'j' in breakresp:
-        pass
-    elif 'end' in breakresp:
-        win.close()
-        sys.exit()
+    if resp_bin == answer:
+        correct_fb.draw()
+    else:
+        wrong_fb.draw()
 
 
 def debriefing():
     #  Debriefing Note
     debrief_text = \
         "\
-That's the End of the Experiment.\n\
-Thank you for your Participation.\
+End of Practice Trials\
 "
 
     debrief = visual.TextStim(win = win, text = ' ', font = 'Times New Roman',
@@ -473,19 +380,7 @@ def main():
     This is the main trial loop
     '''
     for i in range(0, No_of_Trials):
-        '''Write data into dataframe for save '''
-        date_array.append(show_info[0])
-        time_array.append(show_info[1])
-        name_array.append(show_info[2])
-        age_array.append(show_info[3])
-        gender_array.append(show_info[4])
-        hand_array.append(show_info[5])
-        trial_no_array.append(i + 1)
-        condition_array.append(triallist[i][0])
-        set_orientation_array.append(triallist[i][1])
-        cued_orientation_array.append(triallist[i][2])
-        position_array.append(triallist[i][3])
-
+        print(triallist[i])
         # fixation screen
         fixation()
         win.flip()
@@ -505,62 +400,29 @@ def main():
         postcue(triallist[i][0], triallist[i][3])
         win.flip()
 
-        start_time = core.getTime(applyZero = True)
         resp = event.waitKeys(maxWait=1000, keyList=['end','f','j'],
                               clearEvents=True)
 
         if 'end' in resp:
             # Exit Key
-            resp_time = core.getTime(applyZero = True) - start_time
-            response_array.append(resp[0])
-            latency_array.append(resp_time)
-            break
+            win.close()
+            sys.exit()
 
-        elif 'f' in resp:
-            # Anticlockwise response)
-            resp_time = core.getTime(applyZero = True) - start_time
-            response_array.append(resp[0])
-            latency_array.append(resp_time)
+        elif any(keylist in resp for keylist in ("f", "j")):
+            # Feedback Screen
+            feedback(triallist[i][0], triallist[i][1], triallist[i][2], resp)
+            win.flip()
+            core.wait(feedback_screen_time)
+            # ISI
             win.flip()
             core.wait(isi_time)
-            if i in breaktrial:
-                break_time(i)
-                continue
-
-        elif 'j' in resp:
-            # Clockwise response
-            resp_time = core.getTime(applyZero = True) - start_time
-            response_array.append(resp[0])
-            latency_array.append(resp_time)
-            win.flip()
-            core.wait(isi_time)
-            if i in breaktrial:
-                break_time(i)
-                continue
     '''
     The main trial loop Ends Here.
     '''
 
-    # Create the DataFrame & Save it to csv
-    outputfile = pd.DataFrame({'Exp_Date': date_array,
-                               'Exp_Time': time_array,
-                               'Sub_Name': name_array,
-                               'Age': age_array,
-                               'Gender': gender_array,
-                               'Dominant_Hand': hand_array,
-                               'Trial_No': trial_no_array,
-                               'Condition': condition_array,
-                               'Cued_Orientation': cued_orientation_array,
-                               'Set_Orientation': set_orientation_array,
-                               'Position': position_array,
-                               'Response': response_array,
-                               'Latency': latency_array
-                               })
-    outputfile.to_csv(save_path, sep=',', index=False)
     # Debrifing & close all
     debriefing()
     win.close()
-    backup_file.close()
     sys.exit()
 
 
