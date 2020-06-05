@@ -59,11 +59,11 @@ precue_time = 0.75
 gaborset_time = 0.2
 blankscreen_time = 0.4
 isi_time = 0.5
-short_break_time = 30
+short_break_time = 5
 long_break_time = 5
 
 # declare variables for trial generations
-No_of_Trials = 12
+No_of_Trials = 400
 conditions = [1,2,3,4]
 set_orientations = [0,10,-10,20,-20]
 cued_orientations = [0,10,-10,20,-20]
@@ -98,50 +98,6 @@ cued_orientation_array = []
 position_array = []
 response_array = []
 latency_array = []
-
-# Text Variables - All Instruction text
-instruct_text = \
-    "\
-Instructions: \n\
-This experiment is about judging the orientation. On each trial, \
-A fixation cross will appear, followed by a cueing circle, \
-you are required to focus on anything appeared WITHIN this circle. \
-After presenting a flash of orientation patches, you will see another \
-circle, you will need to judge and report the orientation WITHIN \
-this SECOND circle. \n\n\
-For a small circle, report the orientation of the single patch; \n\
-For a big circle, report the average of all patches within. \n\n\
-Press 'f' to indicate an anti-clockwise tilt & \n\
-Press 'j' to indicate a clockwise tilt. \n\n\
-You are required to complete a total of 400 trials, optional or mandatory \
-breaks will be given for every 100 trials (~ 5 minutes).\
-The whole experimental procedure is expected to complete within 30 minutes.\n\n\
-Important Remarks: \n\
-Response ASAP, Stick to you Intuition, & Prevent Overthinking. \n\
-Raise your questions now, if there is any. \n\n\
-Press 'f' or 'j' to Start the Experiment. \n\
-Press 'End' if you want to Terminate the Experiment anytime.\
-"
-
-debrief_text = \
-    "\
-That's the End of the Experiment.\n\
-Thank you for your Participation.\
-"
-may_break_text = \
-    "\
-You have completed 100 trials, you may take a 1-minute break, \n\n\
-If you don't need to, \n\
-Press 'Spacebar' to Skip. \n\
-"
-must_break_text = \
-    "\
-You have completed 200 trials, Take a 2-minute break.\
-"
-end_break_text = \
-    "\
-Break Ended, \nPress 'f' or 'j' to Continue the experiment.\
-"
 
 # clear command output and start logging
 os.system('cls' if os.name == 'ht' else 'clear')
@@ -202,6 +158,29 @@ win = visual.Window(size=screen_resolution, color='#C0C0C0',
 
 def instruction():
     #  creating the instruction text to shown at the beginning
+    instruct_text = \
+        "\
+Instructions: \n\
+This experiment is about judging the orientation. On each trial, \
+A fixation cross will appear, followed by a cueing circle, \
+you are required to focus on anything appeared WITHIN this circle. \
+After presenting a flash of orientation patches, you will see another \
+circle, you will need to judge and report the orientation WITHIN \
+this SECOND circle. \n\n\
+For a small circle, report the orientation of the single patch; \n\
+For a big circle, report the average of all patches within. \n\n\
+Press 'f' to indicate an anti-clockwise tilt & \n\
+Press 'j' to indicate a clockwise tilt. \n\n\
+You are required to complete a total of 400 trials, optional or mandatory \
+breaks will be given for every 100 trials (~ 5 minutes).\
+The whole experimental procedure is expected to complete within 30 minutes.\n\n\
+Important Remarks: \n\
+Response ASAP, Stick to you Intuition, & Prevent Overthinking. \n\
+Raise your questions now, if there is any. \n\n\
+Press 'f' or 'j' to Start the Experiment. \n\
+Press 'End' if you want to Terminate the Experiment anytime.\
+"
+
     instruct = visual.TextStim(win = win, text = ' ', font = 'Times New Roman',
                                pos = (0,0), color = 'black', units = 'deg',
                                height = 0.9, wrapWidth=26
@@ -397,6 +376,21 @@ def postcue(condition, position):
 
 def break_time(trial_no):
     # Create stimuli and actions in break trials
+    may_break_text = \
+        "\
+You have completed {} trials, you may take a 1-minute break, \n\n\
+If you don't need to, \n\
+Press 'Spacebar' to Skip. \n\
+".format(trial_no + 1)
+    must_break_text = \
+        "\
+You have completed {} trials, Take a 2-minute break.\
+".format(trial_no + 1)
+    end_break_text = \
+        "\
+Break Ended, \nPress 'f' or 'j' to Continue the experiment.\
+"
+
     break_text = visual.TextStim(win = win, text = ' ',
                                  font = 'Times New Roman',
                                  pos = (0,-8), color = 'black',
@@ -457,6 +451,12 @@ def break_time(trial_no):
 
 def debriefing():
     #  Debriefing Note
+    debrief_text = \
+        "\
+That's the End of the Experiment.\n\
+Thank you for your Participation.\
+"
+
     debrief = visual.TextStim(win = win, text = ' ', font = 'Times New Roman',
                               pos = (0,0), color = 'black', units = 'deg',
                               height = 0.9, wrapWidth=20
