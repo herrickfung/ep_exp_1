@@ -1,6 +1,6 @@
 '''
-Last Updated on 5/6/2020
-The Sperling's single-ensemble task (Second Version)
+Last Updated on 17/6/2020
+The Sperling's single-ensemble task (Finalized Version)
 #
 Trial Procedure & Time:
 fixation screen: 250ms
@@ -11,17 +11,17 @@ isi blank screen: 500ms
 #
 Trial Constructions:
 4 Experimental Conditions x
-5 Set Ori Tilts (0, +-10, +-20) x
-20 Reps (Taken Together in Psychometric Curve)
+7 Set Ori Tilts (0, +-10, +-20, +-30) x
+14 Reps (Taken Together in Psychometric Curve)
 {
-5 Repetitions for Cued Ori Tilts (0, +-10, +-20)
-4 Repetition for Postional Changes
+7 Repetitions for Cued Ori Tilts (0, +-10, +-20, +-30)
+2 Repetition for Postional Changes
 }
-== 400 trials
+== 392 trials
 #
 Break Trials:
-1 min Self-Terminated Break (in trial 100 & trial 300)
-2 min Mandatory Break (in trial 200)
+1 min Self-Terminated Break (in trial 98 & trial 294)
+2 min Mandatory Break (in trial 196)
 '''
 
 # import libraries
@@ -63,10 +63,10 @@ short_break_time = 5
 long_break_time = 5
 
 # declare variables for trial generations
-No_of_Trials = 400
+No_of_Trials = 392
 conditions = [1,2,3,4]
-set_orientations = [0,10,-10,20,-20]
-cued_orientations = [0,10,-10,20,-20]
+set_orientations = [0,10,-10,20,-20,30,-30]
+cued_orientations = [0,10,-10,20,-20,30,-30]
 positions = [1,2,3,4,5,6,7,8,9]
 breaktrial = [  # for break trials
     ((No_of_Trials / 4) - 1),
@@ -79,7 +79,7 @@ for condition in conditions:
     for set_orientation in set_orientations:
         for cued_orientation in cued_orientations:
             np.random.shuffle(positions)
-            for position in positions[0:4]:
+            for position in positions[0:2]:
                 trial = [condition, set_orientation, cued_orientation, position]
                 triallist.append(trial)
                 np.random.shuffle(triallist)
@@ -171,8 +171,8 @@ For a small circle, report the orientation of the single patch; \n\
 For a big circle, report the average of all patches within. \n\n\
 Press 'f' to indicate an anti-clockwise tilt & \n\
 Press 'j' to indicate a clockwise tilt. \n\n\
-You are required to complete a total of 400 trials, optional or mandatory \
-breaks will be given for every 100 trials (~ 5 minutes).\
+You are required to complete a total of 392 trials, optional or mandatory \
+breaks will be given for every 98 trials (~ 5 minutes).\
 The whole experimental procedure is expected to complete within 30 minutes.\n\n\
 Important Remarks: \n\
 Response ASAP, Stick to you Intuition, & Prevent Overthinking. \n\
@@ -279,7 +279,7 @@ def gaborset(set_orientation, cued_orientation, position):
     np.random.shuffle(pos_array)
 
     ori_array = []
-    pos_ori_array = np.array([25,30,35])
+    pos_ori_array = np.array([5,10,15])
     neg_ori_array = -pos_ori_array
 
     if set_orientation > 0:  # postive ensemble set
@@ -293,8 +293,8 @@ def gaborset(set_orientation, cued_orientation, position):
 
     if cued_orientation == 0:  # To prevent 3 0s when the cued is 0
         ori_array = [0,
-                     cued_orientation + 25,
-                     -cued_orientation - 25,
+                     cued_orientation + 15,
+                     -cued_orientation - 15,
                      pos_ori_array[0],
                      pos_ori_array[1],
                      pos_ori_array[2],
