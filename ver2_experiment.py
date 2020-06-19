@@ -59,8 +59,8 @@ precue_time = 0.75
 gaborset_time = 0.2
 blankscreen_time = 0.4
 isi_time = 0.5
-short_break_time = 5
-long_break_time = 5
+short_break_time = 60
+long_break_time = 120
 
 # declare variables for trial generations
 No_of_Trials = 392
