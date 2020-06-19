@@ -40,18 +40,18 @@ The border width of the circle is 0.2 visual angle
 '''
 
 # Setting for the 2 Monitors in RLG307
-# monitor_name = 'RLG307
-# view_distance = 60
-# screen_width = 59.8
-# screen_resolution = [3840,2160]
-# line_width_in_pixel = 13
+monitor_name = 'RLG307'
+view_distance = 60
+screen_width = 59.8
+screen_resolution = [3840,2160]
+line_width_in_pixel = 13
 
 # Setting for Home Monitor
-monitor_name = 'testMonitor'
-view_distance = 60
-screen_width = 47.5
-screen_resolution = [1680,1050]
-line_width_in_pixel = 7
+# monitor_name = 'testMonitor'
+# view_distance = 60
+# screen_width = 47.5
+# screen_resolution = [1680,1050]
+# line_width_in_pixel = 7
 
 # declare timing variables
 fixation_time = 0.25

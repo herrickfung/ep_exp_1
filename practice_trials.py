@@ -26,18 +26,18 @@ The border width of the circle is 0.2 visual angle
 '''
 
 # Setting for the 2 Monitors in RLG307
-# monitor_name = 'RLG307
-# view_distance = 60
-# screen_width = 59.8
-# screen_resolution = [3840,2160]
-# line_width_in_pixel = 13
+monitor_name = 'RLG307'
+view_distance = 60
+screen_width = 59.8
+screen_resolution = [3840,2160]
+line_width_in_pixel = 13
 
 # Setting for Home Monitor
-monitor_name = 'testMonitor'
-view_distance = 60
-screen_width = 47.5
-screen_resolution = [1680,1050]
-line_width_in_pixel = 7
+# monitor_name = 'testMonitor'
+# view_distance = 60
+# screen_width = 47.5
+# screen_resolution = [1680,1050]
+# line_width_in_pixel = 7
 
 # declare timing variables
 fixation_time = 0.25
@@ -96,7 +96,7 @@ response_edu = "\
 To Respond,\n\
 Press F to indicate Anti-Clockwise Tilt (on Left),\n\
 Press J to indicate Clockwise Tilt (on Right).\n\n\
-Enter -- Practice this Condition.\n\
+F or J -- Practice this Condition.\n\
 Backspace -- Repeat this walkthrough.\
 "
 next_text = "\
@@ -254,8 +254,8 @@ def gaborset(set_orientation, cued_orientation, position):
 
     if cued_orientation == 0:  # To prevent 3 0s when the cued is 0
         ori_array = [0,
-                     cued_orientation + 25,
-                     -cued_orientation - 25,
+                     cued_orientation + 15,
+                     -cued_orientation - 15,
                      pos_ori_array[0],
                      pos_ori_array[1],
                      pos_ori_array[2],
@@ -338,12 +338,12 @@ def feedback(condition, set_orientation, cued_orientation, response):
     Draw a green circle for correct, red for wrong
     if 0 in ori: always correct
     '''
-    correct_fb = visual.Circle(win=win, units = 'deg', pos=(0,0), radius=2.5,
+    correct_fb = visual.Circle(win=win, units = 'deg', pos=(0,0), radius=5.5,
                                edges=1000, fillColor='#ADFF2F',
                                lineColor='#ADFF2F',
                                lineWidth=line_width_in_pixel,
                                opacity=1)
-    wrong_fb = visual.Circle(win=win, units = 'deg', pos=(0,0), radius=2.5,
+    wrong_fb = visual.Circle(win=win, units = 'deg', pos=(0,0), radius=5.5,
                              edges=1000, fillColor='#FF0000',
                              lineColor='#FF0000',
                              lineWidth=line_width_in_pixel,
@@ -503,9 +503,10 @@ def tutor_s_s():
         edu_gabor.pos = (5,0)
         edu_gabor.draw()
         win.flip()
-        go = event.waitKeys(maxWait=1000, keyList=['return', 'end', 'backspace'],
-                            clearEvents=True)
-        if 'return' in go:
+        go = event.waitKeys(maxWait=1000, clearEvents=True,
+                            keyList=['return', 'end', 'backspace', 'f', 'j'],
+                            )
+        if any(keylist in go for keylist in ("f", "j", "return")):
             break
         elif 'end' in go:
             win.close()
@@ -683,9 +684,10 @@ def tutor_e_e():
         edu_gabor.pos = (5,0)
         edu_gabor.draw()
         win.flip()
-        go = event.waitKeys(maxWait=1000, keyList=['return', 'end', 'backspace'],
-                            clearEvents=True)
-        if 'return' in go:
+        go = event.waitKeys(maxWait=1000, clearEvents=True,
+                            keyList=['return', 'end', 'backspace', 'f', 'j'],
+                            )
+        if any(keylist in go for keylist in ("f", "j", "return")):
             break
         elif 'end' in go:
             win.close()
@@ -839,9 +841,10 @@ def tutor_s_e():
         edu_text.setText(postcue_edu)
         edu_text.draw()
         win.flip()
-        go = event.waitKeys(maxWait=1000, keyList=['space','end'],
-                            clearEvents=True)
-        if 'space' in go:
+        go = event.waitKeys(maxWait=1000, clearEvents=True,
+                            keyList=['return', 'end', 'backspace', 'f', 'j'],
+                            )
+        if any(keylist in go for keylist in ("f", "j", "return")):
             break
         elif 'end' in go:
             win.close()
@@ -1043,9 +1046,10 @@ def tutor_e_s():
         edu_gabor.pos = (5,0)
         edu_gabor.draw()
         win.flip()
-        go = event.waitKeys(maxWait=1000, keyList=['return', 'end', 'backspace'],
-                            clearEvents=True)
-        if 'return' in go:
+        go = event.waitKeys(maxWait=1000, clearEvents=True,
+                            keyList=['return', 'end', 'backspace', 'f', 'j'],
+                            )
+        if any(keylist in go for keylist in ("f", "j", "return")):
             break
         elif 'end' in go:
             win.close()
