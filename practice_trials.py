@@ -39,7 +39,7 @@ line_width_in_pixel = 13
 # screen_resolution = [1680,1050]
 # line_width_in_pixel = 7
 
-# declare timing variables
+# # declare timing variables
 fixation_time = 0.25
 precue_time = 0.75
 gaborset_time = 0.2
@@ -82,8 +82,8 @@ gabor_edu_1 = "\
 Now, a set of orientation patches will be shown. \n\
 Focus on the patch/patches INSIDE the previous circle.\
 "
-gabor_edu_2 = "\n\n\n\n\
- In this case, you should be looking at the circled patch/patches.\
+gabor_edu_2 = "\n\n\n\n\n\n\
+In this case, you should be looking at the circled patch/patches.\
 "
 postcue_edu = "\
 A Circular Cue will be shown again.\n\
